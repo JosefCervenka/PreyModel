@@ -7,9 +7,9 @@
 		<vendor>isee systems, inc.</vendor>
 		<product version="1.9" isee:build_number="1841" isee:saved_by_v1="true" lang="en">Stella Professional</product>
 	</header>
-	<sim_specs isee:simulation_delay="0.0015" isee:restore_on_start="false" method="Euler" time_units="Months" isee:instantaneous_flows="false">
+	<sim_specs isee:simulation_delay="0.003" isee:restore_on_start="false" method="Euler" time_units="Months" isee:instantaneous_flows="false">
 		<start>1</start>
-		<stop>1000</stop>
+		<stop>500</stop>
 		<dt reciprocal="true">4</dt>
 	</sim_specs>
 	<isee:prefs show_module_prefix="true" live_update_on_drag="true" show_restore_buttons="false" layer="model" interface_scale_ui="true" interface_max_page_width="10000" interface_max_page_height="10000" interface_min_page_width="0" interface_min_page_height="0" saved_runs="5" keep="false" rifp="true"/>
@@ -32,17 +32,17 @@
 				<non_negative/>
 			</flow>
 			<aux name="alfa">
-				<eqn>0.02</eqn>
+				<eqn>0.6</eqn>
 			</aux>
 			<flow name="Fox dead">
 				<eqn>&quot;@beta&quot; * Foxes</eqn>
 				<non_negative/>
 			</flow>
 			<aux name="@beta">
-				<eqn>0.02</eqn>
+				<eqn>0.15</eqn>
 			</aux>
 			<stock name="Rabbits">
-				<eqn>10000</eqn>
+				<eqn>1000</eqn>
 				<inflow>Rabbit_born</inflow>
 				<outflow>Rabbit_dead</outflow>
 				<non_negative/>
@@ -52,7 +52,7 @@
 				<non_negative/>
 			</flow>
 			<aux name="gama">
-				<eqn>0.2</eqn>
+				<eqn>0.01</eqn>
 			</aux>
 			<flow name="Rabbit dead">
 				<eqn>Hunt_Succesfull</eqn>
@@ -66,11 +66,11 @@
 				<eqn>Foxes_And_Rabbits * delta</eqn>
 			</aux>
 			<aux name="delta">
-				<eqn>0.02</eqn>
+				<eqn>0.0003</eqn>
 				<units>Hunt Succes ratio</units>
 			</aux>
 			<aux name="Repro Case">
-				<eqn>alfa * Foxes_And_Rabbits</eqn>
+				<eqn>alfa * Foxes_And_Rabbits * delta</eqn>
 			</aux>
 		</variables>
 		<views>
@@ -118,7 +118,7 @@
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="842" page_height="595" isee:page_cols="2" zoom="140" isee:popup_graphs_are_comparative="true" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="1091" page_height="761" isee:page_cols="2" zoom="120" isee:popup_graphs_are_comparative="true" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="9pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -155,14 +155,14 @@
 					</graph>
 					<table color="black" background="#E0E0E0" text_align="right" font_size="12pt" orientation="vertical" wrap_text="false" isee:auto_fit="true" isee:use_alternate_row_colors="false" isee:unlimited_table_length="false" blank_column_width="80" column_width="160" interval="1" report_balances="beginning" report_flows="instantaneous" header_font_style="normal" header_font_weight="normal" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="12pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 				</style>
-				<stock x="273.214" y="218.214" width="38.5714" height="89.2857" name="Foxes"/>
+				<stock x="273.214" y="216.547" width="38.5714" height="89.2857" name="Foxes"/>
 				<flow x="210.107" y="241.429" name="Fox Repro">
 					<pts>
 						<pt x="147" y="241.429"/>
 						<pt x="273.214" y="241.429"/>
 					</pts>
 				</flow>
-				<aux x="183.821" y="98.2857" width="17.2857" height="17.2857" name="alfa"/>
+				<aux x="183.821" y="99.119" width="17.2857" height="17.2857" name="alfa"/>
 				<flow x="381.643" y="241.429" name="Fox dead">
 					<pts>
 						<pt x="311.785" y="241.429"/>
@@ -170,7 +170,7 @@
 					</pts>
 				</flow>
 				<aux label_side="bottom" x="425" y="198.714" name="@beta"/>
-				<connector uid="1" angle="198.189">
+				<connector uid="1" angle="159.988">
 					<from>&quot;@beta&quot;</from>
 					<to>Fox_dead</to>
 				</connector>
@@ -185,15 +185,15 @@
 						</plot>
 					</graph>
 				</stacked_container>
-				<stock x="691.072" y="216.071" width="45" height="72.8571" name="Rabbits"/>
-				<flow x="614.75" y="239.322" width="18" height="18" name="Rabbit born">
+				<stock x="692.739" y="216.071" width="45" height="72.8571" name="Rabbits"/>
+				<flow x="624.584" y="248.322" name="Rabbit born">
 					<pts>
 						<pt x="556.429" y="248.322"/>
-						<pt x="691.072" y="248.322"/>
+						<pt x="692.739" y="248.322"/>
 					</pts>
 				</flow>
 				<aux label_side="bottom" x="559.286" y="297.928" name="gama"/>
-				<connector uid="4" angle="37.5789">
+				<connector uid="4" angle="48.0392">
 					<from>gama</from>
 					<to>Rabbit_born</to>
 				</connector>
@@ -201,9 +201,9 @@
 					<from>Rabbits</from>
 					<to>Rabbit_born</to>
 				</connector>
-				<flow x="797.75" y="239.322" width="18" height="18" name="Rabbit dead">
+				<flow x="807.584" y="248.322" name="Rabbit dead">
 					<pts>
-						<pt x="736.072" y="248.322"/>
+						<pt x="737.739" y="248.322"/>
 						<pt x="901.429" y="248.322"/>
 					</pts>
 				</flow>
@@ -212,9 +212,12 @@
 						<plot color="blue" pen_width="1" index="0" show_y_axis="true">
 							<entity name="Rabbits"/>
 						</plot>
+						<plot color="red" pen_style="dot_dashed" pen_width="1" index="1" show_y_axis="true">
+							<entity name="Foxes"/>
+						</plot>
 					</graph>
 				</stacked_container>
-				<aux x="508.143" y="164.214" name="Foxes And Rabbits"/>
+				<aux x="499.143" y="155.214" width="18" height="18" name="Foxes And Rabbits"/>
 				<connector uid="7" angle="100.486">
 					<from>Rabbits</from>
 					<to>Foxes_And_Rabbits</to>
@@ -224,7 +227,7 @@
 					<to>Foxes_And_Rabbits</to>
 				</connector>
 				<aux x="770" y="157.785" name="Hunt Succesfull"/>
-				<connector uid="9" angle="1.40632">
+				<connector uid="9" angle="1.40642">
 					<from>Foxes_And_Rabbits</from>
 					<to>Hunt_Succesfull</to>
 				</connector>
@@ -232,7 +235,7 @@
 					<from>Hunt_Succesfull</from>
 					<to>Rabbit_dead</to>
 				</connector>
-				<aux label_side="bottom" x="830.714" y="111.429" name="delta"/>
+				<aux label_side="bottom" x="839.881" y="94.7623" name="delta"/>
 				<connector uid="11" angle="195.945">
 					<from>delta</from>
 					<to>Hunt_Succesfull</to>
@@ -246,15 +249,16 @@
 					<from>Repro_Case</from>
 					<to>Fox_Repro</to>
 				</connector>
-				<connector uid="14" angle="318.313">
+				<connector uid="14" angle="318.824">
 					<from>alfa</from>
+					<to>Repro_Case</to>
+				</connector>
+				<connector uid="15" angle="157.75">
+					<from>delta</from>
 					<to>Repro_Case</to>
 				</connector>
 			</view>
 		</views>
 	</model>
-	<isee:controls>
-		<isee:control priority="interactive" name="delta" value="0.000247533490740349"/>
-	</isee:controls>
 </xmile>
 
