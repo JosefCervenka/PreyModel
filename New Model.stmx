@@ -18,11 +18,22 @@
 		<isee:time_format name="Builtin" type="adaptive"/>
 	</isee:time_formats>
 	<default_format/>
+	<isee:sensi_specs_list>
+		<isee:sensi_specs name="Sensitivity" method="multivariate" runs="5">
+			<isee:variable starting_value="10" ending_value="1000" type="incremental" seed="12345" name="Foxes" num_samples="5"/>
+		</isee:sensi_specs>
+	</isee:sensi_specs_list>
+	<isee:optimizer_specs_list active_index="0">
+		<isee:optimizer_specs name="Optimization" method="Powell" additional_starts="0" report_interval="1" confidence_range="0"/>
+	</isee:optimizer_specs_list>
+	<isee:payoff_specs_list>
+		<isee:payoff_specs name="Payoff"/>
+	</isee:payoff_specs_list>
 	<model_units/>
 	<model>
 		<variables>
 			<stock name="Foxes">
-				<eqn>10</eqn>
+				<eqn>100</eqn>
 				<inflow>Fox_Repro</inflow>
 				<outflow>Fox_dead</outflow>
 				<non_negative/>
@@ -35,14 +46,14 @@
 				<eqn>0.6</eqn>
 			</aux>
 			<flow name="Fox dead">
-				<eqn>&quot;@beta&quot; * Foxes</eqn>
+				<eqn>&quot;@beta&quot; * Foxes*Hunt_Succesful_2</eqn>
 				<non_negative/>
 			</flow>
 			<aux name="@beta">
-				<eqn>0.15</eqn>
+				<eqn>0.05</eqn>
 			</aux>
 			<stock name="Rabbits">
-				<eqn>1000</eqn>
+				<eqn>20000</eqn>
 				<inflow>Rabbit_born</inflow>
 				<outflow>Rabbit_dead</outflow>
 				<non_negative/>
@@ -55,7 +66,7 @@
 				<eqn>0.01</eqn>
 			</aux>
 			<flow name="Rabbit dead">
-				<eqn>Hunt_Succesfull</eqn>
+				<eqn>Hunt_Succesfull*Hunt_Succesfull_Rabbit</eqn>
 				<non_negative/>
 			</flow>
 			<aux name="Foxes And Rabbits">
@@ -66,11 +77,52 @@
 				<eqn>Foxes_And_Rabbits * delta</eqn>
 			</aux>
 			<aux name="delta">
-				<eqn>0.0003</eqn>
+				<eqn>0.0001</eqn>
 				<units>Hunt Succes ratio</units>
 			</aux>
 			<aux name="Repro Case">
 				<eqn>alfa * Foxes_And_Rabbits * delta</eqn>
+			</aux>
+			<stock name="Predator">
+				<eqn>10</eqn>
+				<inflow>P_born</inflow>
+				<outflow>P_dead</outflow>
+				<non_negative/>
+			</stock>
+			<flow name="P born">
+				<eqn>Repro_Case_2</eqn>
+				<non_negative/>
+			</flow>
+			<flow name="P dead">
+				<eqn>Predator*beta2</eqn>
+				<non_negative/>
+			</flow>
+			<aux name="Repro Case 2">
+				<eqn>alfa2*All</eqn>
+			</aux>
+			<aux name="Hunt Succesfull Rabbit">
+				<eqn>Predator_and_Rabbits*delta2</eqn>
+			</aux>
+			<aux name="Foxes and Predator">
+				<eqn>Foxes+Predator</eqn>
+			</aux>
+			<aux name="Predator and Rabbits">
+				<eqn>Rabbits+Predator</eqn>
+			</aux>
+			<aux name="alfa2">
+				<eqn>0.0001*0.0001</eqn>
+			</aux>
+			<aux name="delta2">
+				<eqn>0.00005</eqn>
+			</aux>
+			<aux name="Hunt Succesful 2">
+				<eqn>Foxes_and_Predator*delta2</eqn>
+			</aux>
+			<aux name="All">
+				<eqn>Foxes+Rabbits+Predator</eqn>
+			</aux>
+			<aux name="beta2">
+				<eqn>0.05</eqn>
 			</aux>
 		</variables>
 		<views>
@@ -118,7 +170,7 @@
 				<isee:iframe color="black" background="white" text_align="left" vertical_text_align="top" font_size="12pt" border_width="thin" border_style="solid"/>
 				<isee:financial_table color="black" background="#E0E0E0" text_align="right" font_size="12pt" auto_fit="true" first_column_width="250" other_column_width="100" header_font_style="normal" header_font_weight="bold" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="14pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 			</style>
-			<view isee:show_pages="false" background="white" page_width="1091" page_height="761" isee:page_cols="2" zoom="120" isee:popup_graphs_are_comparative="true" type="stock_flow">
+			<view isee:show_pages="false" background="white" page_width="1123" page_height="793" isee:page_cols="2" isee:page_rows="2" zoom="120" isee:popup_graphs_are_comparative="true" type="stock_flow">
 				<style color="black" background="white" font_style="normal" font_weight="normal" text_decoration="none" text_align="center" vertical_text_align="center" font_color="black" font_family="Arial" font_size="10pt" padding="2" border_color="black" border_width="thin" border_style="none">
 					<stock color="blue" background="white" font_color="blue" font_size="9pt" label_side="top">
 						<shape type="rectangle" width="45" height="35"/>
@@ -155,21 +207,21 @@
 					</graph>
 					<table color="black" background="#E0E0E0" text_align="right" font_size="12pt" orientation="vertical" wrap_text="false" isee:auto_fit="true" isee:use_alternate_row_colors="false" isee:unlimited_table_length="false" blank_column_width="80" column_width="160" interval="1" report_balances="beginning" report_flows="instantaneous" header_font_style="normal" header_font_weight="normal" header_text_decoration="none" header_text_align="center" header_vertical_text_align="center" header_font_color="black" header_font_family="Arial" header_font_size="12pt" header_text_padding="2" header_text_border_color="black" header_text_border_width="thin" header_text_border_style="none"/>
 				</style>
-				<stock x="273.214" y="216.547" width="38.5714" height="89.2857" name="Foxes"/>
-				<flow x="210.107" y="241.429" name="Fox Repro">
+				<stock x="198.214" y="179.88" width="41.0714" height="58.4524" name="Foxes"/>
+				<flow x="135.107" y="204.762" name="Fox Repro">
 					<pts>
-						<pt x="147" y="241.429"/>
-						<pt x="273.214" y="241.429"/>
+						<pt x="72" y="204.762"/>
+						<pt x="198.214" y="204.762"/>
 					</pts>
 				</flow>
-				<aux x="183.821" y="99.119" width="17.2857" height="17.2857" name="alfa"/>
-				<flow x="381.643" y="241.429" name="Fox dead">
+				<aux x="108.821" y="62.4523" width="17.2857" height="17.2857" name="alfa"/>
+				<flow x="307.893" y="204.762" name="Fox dead">
 					<pts>
-						<pt x="311.785" y="241.429"/>
-						<pt x="475.5" y="241.429"/>
+						<pt x="239.285" y="204.762"/>
+						<pt x="400.5" y="204.762"/>
 					</pts>
 				</flow>
-				<aux label_side="bottom" x="425" y="198.714" name="@beta"/>
+				<aux label_side="bottom" x="350" y="162.047" name="@beta"/>
 				<connector uid="1" angle="159.988">
 					<from>&quot;@beta&quot;</from>
 					<to>Fox_dead</to>
@@ -178,84 +230,174 @@
 					<from>Foxes</from>
 					<to>Fox_dead</to>
 				</connector>
-				<stacked_container uid="3" x="123.571" y="377.143" width="358.571" height="192.857">
-					<graph width="358.571" height="192.857" type="time_series" isee:points_only="false" show_grid="false" include_units_in_legend="false" plot_numbers="false" isee:label_pie_slices="false" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="5" num_y_labels="3" isee:fill_intensity="0.1" left_axis_multi_scale="false" left_axis_auto_scale="true" right_axis_multi_scale="false" right_axis_auto_scale="true">
-						<plot color="blue" pen_width="1" index="0" show_y_axis="true">
-							<entity name="Foxes"/>
-						</plot>
-					</graph>
-				</stacked_container>
-				<stock x="692.739" y="216.071" width="45" height="72.8571" name="Rabbits"/>
-				<flow x="624.584" y="248.322" name="Rabbit born">
+				<stock x="626.072" y="174.404" width="47.5" height="65.3571" name="Rabbits"/>
+				<flow x="553.751" y="211.655" name="Rabbit born">
 					<pts>
-						<pt x="556.429" y="248.322"/>
-						<pt x="692.739" y="248.322"/>
+						<pt x="481.429" y="211.655"/>
+						<pt x="626.072" y="211.655"/>
 					</pts>
 				</flow>
-				<aux label_side="bottom" x="559.286" y="297.928" name="gama"/>
-				<connector uid="4" angle="48.0392">
+				<aux label_side="bottom" x="455.476" y="186.762" name="gama"/>
+				<connector uid="3" angle="48.0392">
 					<from>gama</from>
 					<to>Rabbit_born</to>
 				</connector>
-				<connector uid="5" angle="223.708">
+				<connector uid="4" angle="223.708">
 					<from>Rabbits</from>
 					<to>Rabbit_born</to>
 				</connector>
-				<flow x="807.584" y="248.322" name="Rabbit dead">
+				<flow x="738.001" y="211.655" name="Rabbit dead">
 					<pts>
-						<pt x="737.739" y="248.322"/>
-						<pt x="901.429" y="248.322"/>
+						<pt x="673.572" y="211.655"/>
+						<pt x="826.429" y="211.655"/>
 					</pts>
 				</flow>
-				<stacked_container uid="6" x="517.143" y="376.786" width="346.429" height="193.571">
-					<graph width="346.429" height="193.571" type="time_series" isee:points_only="false" show_grid="false" include_units_in_legend="false" plot_numbers="false" isee:label_pie_slices="false" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="5" num_y_labels="3" isee:fill_intensity="0.1" left_axis_multi_scale="false" left_axis_auto_scale="true" right_axis_multi_scale="false" right_axis_auto_scale="true">
+				<stacked_container uid="5" x="779" y="432.619" width="431.429" height="316.904">
+					<graph width="431.429" height="316.904" isee:stash="true" type="time_series" isee:points_only="false" show_grid="false" include_units_in_legend="false" plot_numbers="false" isee:label_pie_slices="false" num_x_grid_lines="0" num_y_grid_lines="0" num_x_labels="5" num_y_labels="3" isee:fill_intensity="0.1" left_axis_multi_scale="false" left_axis_auto_scale="true" right_axis_multi_scale="false" right_axis_auto_scale="true">
 						<plot color="blue" pen_width="1" index="0" show_y_axis="true">
 							<entity name="Rabbits"/>
 						</plot>
 						<plot color="red" pen_style="dot_dashed" pen_width="1" index="1" show_y_axis="true">
 							<entity name="Foxes"/>
 						</plot>
+						<plot color="fuchsia" pen_style="dotted" pen_width="1" index="2" show_y_axis="true">
+							<entity name="Predator"/>
+						</plot>
 					</graph>
 				</stacked_container>
-				<aux x="499.143" y="155.214" width="18" height="18" name="Foxes And Rabbits"/>
-				<connector uid="7" angle="100.486">
+				<aux x="417.476" y="117.714" width="18" height="18" name="Foxes And Rabbits"/>
+				<connector uid="6" angle="100.486">
 					<from>Rabbits</from>
 					<to>Foxes_And_Rabbits</to>
 				</connector>
-				<connector uid="8" angle="69.4435">
+				<connector uid="7" angle="69.4435">
 					<from>Foxes</from>
 					<to>Foxes_And_Rabbits</to>
 				</connector>
-				<aux x="770" y="157.785" name="Hunt Succesfull"/>
-				<connector uid="9" angle="1.40642">
+				<aux x="695" y="121.118" name="Hunt Succesfull"/>
+				<connector uid="8" angle="1.19379">
 					<from>Foxes_And_Rabbits</from>
 					<to>Hunt_Succesfull</to>
 				</connector>
-				<connector uid="10" angle="313.229">
+				<connector uid="9" angle="313.229">
 					<from>Hunt_Succesfull</from>
 					<to>Rabbit_dead</to>
 				</connector>
-				<aux label_side="bottom" x="839.881" y="94.7623" name="delta"/>
-				<connector uid="11" angle="195.945">
+				<aux label_side="bottom" x="764.881" y="58.0956" name="delta"/>
+				<connector uid="10" angle="195.945">
 					<from>delta</from>
 					<to>Hunt_Succesfull</to>
 				</connector>
-				<aux x="245" y="153.714" name="Repro Case"/>
-				<connector uid="12" angle="177.715">
+				<aux x="170" y="117.047" name="Repro Case"/>
+				<connector uid="11" angle="177.842">
 					<from>Foxes_And_Rabbits</from>
 					<to>Repro_Case</to>
 				</connector>
-				<connector uid="13" angle="180.498">
+				<connector uid="12" angle="180.498">
 					<from>Repro_Case</from>
 					<to>Fox_Repro</to>
 				</connector>
-				<connector uid="14" angle="318.824">
+				<connector uid="13" angle="318.824">
 					<from>alfa</from>
 					<to>Repro_Case</to>
 				</connector>
-				<connector uid="15" angle="157.75">
+				<connector uid="14" angle="157.75">
 					<from>delta</from>
 					<to>Repro_Case</to>
+				</connector>
+				<stock x="480.643" y="553.333" name="Predator"/>
+				<flow x="392.405" y="553.333" name="P born">
+					<pts>
+						<pt x="326.667" y="553.333"/>
+						<pt x="458.143" y="553.333"/>
+					</pts>
+				</flow>
+				<flow label_side="bottom" x="558.322" y="551.667" name="P dead">
+					<pts>
+						<pt x="503.143" y="551.667"/>
+						<pt x="637.5" y="551.667"/>
+					</pts>
+				</flow>
+				<aux x="280.726" y="440.167" name="Repro Case 2"/>
+				<aux x="720.001" y="341.833" name="Hunt Succesfull Rabbit"/>
+				<connector uid="15" angle="314.621">
+					<from>Repro_Case_2</from>
+					<to>P_born</to>
+				</connector>
+				<aux x="336.726" y="348" name="Foxes and Predator"/>
+				<connector uid="16" angle="310.345">
+					<from>Foxes</from>
+					<to>Foxes_and_Predator</to>
+				</connector>
+				<connector uid="17" angle="125.026">
+					<from>Predator</from>
+					<to>Foxes_and_Predator</to>
+				</connector>
+				<aux x="595.084" y="431.833" name="Predator and Rabbits"/>
+				<connector uid="18" angle="256.312">
+					<from>Rabbits</from>
+					<to>Predator_and_Rabbits</to>
+				</connector>
+				<connector uid="19" angle="77.5836">
+					<from>Predator</from>
+					<to>Predator_and_Rabbits</to>
+				</connector>
+				<aux x="168.333" y="491.833" name="alfa2"/>
+				<aux x="453.381" y="255.333" width="18" height="18" name="delta2"/>
+				<connector uid="20" angle="343.257">
+					<from>delta2</from>
+					<to>Hunt_Succesfull_Rabbit</to>
+				</connector>
+				<connector uid="21" angle="35.772">
+					<from>Predator_and_Rabbits</from>
+					<to>Hunt_Succesfull_Rabbit</to>
+				</connector>
+				<aux x="378" y="302.5" name="Hunt Succesful 2"/>
+				<connector uid="22" angle="47.7882">
+					<from>Foxes_and_Predator</from>
+					<to>Hunt_Succesful_2</to>
+				</connector>
+				<connector uid="23" angle="120.964">
+					<from>Hunt_Succesful_2</from>
+					<to>Fox_dead</to>
+				</connector>
+				<connector uid="24" angle="30.5631">
+					<from>Hunt_Succesfull_Rabbit</from>
+					<to>Rabbit_dead</to>
+				</connector>
+				<connector uid="25" angle="10.4599">
+					<from>alfa2</from>
+					<to>Repro_Case_2</to>
+				</connector>
+				<aux x="485.643" y="386.5" name="All"/>
+				<connector uid="26" angle="266.036">
+					<from>Foxes</from>
+					<to>All</to>
+				</connector>
+				<connector uid="27" angle="227.539">
+					<from>Rabbits</from>
+					<to>All</to>
+				</connector>
+				<connector uid="28" angle="88.2834">
+					<from>Predator</from>
+					<to>All</to>
+				</connector>
+				<aux x="610" y="619" name="beta2"/>
+				<connector uid="29" angle="127.506">
+					<from>beta2</from>
+					<to>P_dead</to>
+				</connector>
+				<connector uid="30" angle="242.403">
+					<from>All</from>
+					<to>Repro_Case_2</to>
+				</connector>
+				<connector uid="31" angle="178.358">
+					<from>delta2</from>
+					<to>Hunt_Succesful_2</to>
+				</connector>
+				<connector uid="32" angle="26.8628">
+					<from>Predator</from>
+					<to>P_dead</to>
 				</connector>
 			</view>
 		</views>
